@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sungin.ohBlogApi.dao.blogBoardMapper">
+
+
+    <select id="selectBibleContents" resultType="com.sungin.ohBlogApi.vo.BibleContentModel" >
+
+        SELECT bk.bible_kind as bibleKind,bk.language, bk.book_name as bookName, bk.bible_max_chapter as bookMaxChapter
+        , bbkv.chapter_max_paragraph as ChapterMaxParagraph ,bbkv.paragraph_value as paragraphValue, bbkv.chapter, bbkv.paragraph
+        FROM bible_book_kind_value_seconds as bbkv
+        JOIN bible b ON b.bible_idx = bbkv.bible_idx
+        JOIN book_kind bk ON bk.book_kind_idx = bbkv.book_kind_idx
+        LIMIT 12
+    </select>
+
+</mapper>
