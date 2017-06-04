@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sungin.ohBlogApi.dao.BlogBoardMapper">
+
+
+    <select id="checkBoardCategory" resultType="int" parameterType="int">
+        SELECT count(*) as count from OhBoardCategory where del_yn = 'N' and category_key = 1
+    </select>
+
+    <select id="getBoardList" resultType="com.sungin.ohBlogApi.vo.BoardVO" parameterType="com.sungin.ohBlogApi.vo.BoardVO">
+       select ob.board_key as boardKey, ob.title,DATE_FORMAT( ob.regi_date, '%Y-%m-%d' ) as regiDate , om.member_nickname as memberNickName, obc.category_name as categoryName, ob.hits as hits, if(board_sub_img is null,'/uploads/default/texter.png',board_sub_img ) as boardSubImg
+                    from OhBoard as ob
+                    left join OhMember om ON ob.member_key = om.member_key
+                    left join OhBoardCategory obc USING(category_key)
+                    where ob.category_key = #{categoryKey} and ob.flag = #{flag} limit 0, #{limit}
+    </select>
+
+    <select id="getBoardContent" resultType="com.sungin.ohBlogApi.vo.BoardVO" parameterType="integer">
+        select ob.board_key as boardKey, ob.title, ob.content, ob.member_key as memberKey, obc.category_name as categoryName,
+                obc.category_key as categoryKey, DATE_FORMAT(ob.regi_date,'%Y-%m-%d') as regiDate, om.member_id as memberId
+                    from OhBoard as ob
+                    left join OhMember om USING(member_key)
+                    left join OhBoardCategory obc USING(category_key)
+                    where ob.board_key = #{boardKey} and ob.flag = "N"
+    </select>
+
+    <update id="updateBoardContent" parameterType="com.sungin.ohBlogApi.vo.BoardVO">
+        update OhBoard
+        set title = #{title}, content = #{content}
+        where member_key = #{memberKey} and board_key = #{boardKey}
+    </update>
+
+    <update id="deleteBoardContent" parameterType="integer">
+        update OhBoard set flag = "Y" where board_key = #{boardKey}
+    </update>
+
+    <select id="getBoardCategory" resultType="com.sungin.ohBlogApi.vo.BoardVO" >
+        select category_key as categoryKey, category_name as categoryName,
+              regi_date as regiDate, update_date as updateDate
+        from OhBoardCategory
+        where del_yn = "N"
+    </select>
+
+    <select id="getBoardCommentList" resultType="com.sungin.ohBlogApi.vo.BoardCommentVO" parameterType="integer">
+        select oc.comment_key as commentKey, oc.comment_content as commentContent, oc.update_date as updateDate,
+              om.member_key as memberKey, om.member_nickname as memberNickname, oc.board_key as boardKey
+        from OhComment as oc
+        left join OhMember om using(member_key)
+        where oc.board_key = #{boardKey} and oc.flag = "N"
+    </select>
+
+    <insert id="insertBoardComment" parameterType="com.sungin.ohBlogApi.vo.BoardCommentVO">
+        insert into OhComment (board_key,comment_content,member_key) values(#{boardKey},#{commentContent},#{memberKey})
+    </insert>
+
+    <update id="deleteBoardComment" parameterType="integer">
+        update OhComment set flag = "Y" where comment_key = #{commentKey}
+    </update>
+
+
+
+</mapper>

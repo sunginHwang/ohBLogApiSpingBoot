@@ -11,7 +11,7 @@ import java.util.List;
  * Created by hwangseong-in on 2017. 6. 3..
  */
 
-public class boardDao {
+public class BoardDao {
 
 
 }
