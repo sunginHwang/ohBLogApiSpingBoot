@@ -1,5 +1,6 @@
 package com.sungin.ohBlogApi.config.security;
 
+import com.sungin.ohBlogApi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
 
     @Autowired
+    private UserService userService;
+    @Autowired
     private HttpAuthenticationEntryPoint httpAuthenticationEntryPoint;
     @Autowired
     private AuthSuccessHandler authSuccessHandler;
@@ -38,33 +41,41 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         http.exceptionHandling().authenticationEntryPoint(httpAuthenticationEntryPoint);
         http.csrf().disable();
+       /* http
+                .authorizeRequests()
+                .antMatchers("/user/login").permitAll()
+                .antMatchers(HttpMethod.GET,"/board/content**").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .logout();*/
 
         /*로그인 설정*/
         http.formLogin()
                 .permitAll()
-                .loginProcessingUrl("/user/login")
-                .usernameParameter("ID")
-                .passwordParameter("PASSWORD")
+                .loginProcessingUrl("/login")
+                .usernameParameter("username")
+                .passwordParameter("password")
                 .successHandler(authSuccessHandler)
                 .failureHandler(authFailureHandler)
-            .and()
-            .logout()
+                .and()
+                .logout()
                 .permitAll()
                 .logoutRequestMatcher(new AntPathRequestMatcher("/user/logout"))
                 .logoutSuccessHandler(httpLogoutSuccessHandler)
-            .and()
-            .sessionManagement()
-             .maximumSessions(1);
+                .and()
+                .sessionManagement()
+                .maximumSessions(1);
 
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET,"/board/content").permitAll()
                 .anyRequest().authenticated();
 
+
     }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        super.configure(auth);
+       auth.userDetailsService(userService);
     }
 
     @Bean
@@ -72,4 +83,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
+
+
 }

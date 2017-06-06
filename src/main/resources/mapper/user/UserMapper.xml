@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sungin.ohBlogApi.dao.UserMapper">
+
+
+    <select id="getUserInfo" resultType="com.sungin.ohBlogApi.vo.UserVO" parameterType="string">
+        SELECT member_key as memberKey, member_id as username, member_name as name, member_age as memberAge, member_phone as memberPhone,
+              member_email as memberEmail, member_password as password, isAccountNonExpired, isAccountNonLocked, isCredentialsNonExpired , isEnabled
+        from OhMember where flag = 'N' and member_id = #{username}
+    </select>
+
+    <select id="readAuthority" parameterType="string" resultType="string">
+        SELECT authority_name FROM memberAuthority WHERE member_id = #{username}
+    </select>
+
+</mapper>
