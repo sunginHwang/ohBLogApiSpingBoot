@@ -41,6 +41,8 @@ public class UserServiceImpl implements UserService {
 
     }
 
-
-
+    @Override
+    public String testCookie() {
+        return userMapper.test();
+    }
 }

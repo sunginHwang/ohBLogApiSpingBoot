@@ -1,5 +1,9 @@
 package com.sungin.ohBlogApi.config.security;
 
+import com.sungin.ohBlogApi.config.security.filter.AuthFilter;
+import com.sungin.ohBlogApi.config.security.handler.AuthFailureHandler;
+import com.sungin.ohBlogApi.config.security.handler.AuthSuccessHandler;
+import com.sungin.ohBlogApi.config.security.handler.HttpLogoutSuccessHandler;
 import com.sungin.ohBlogApi.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -11,6 +15,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
@@ -31,6 +36,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     private AuthFailureHandler authFailureHandler;
     @Autowired
     private HttpLogoutSuccessHandler httpLogoutSuccessHandler;
+    @Autowired
+    private AuthFilter authFilter;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -41,13 +48,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         http.exceptionHandling().authenticationEntryPoint(httpAuthenticationEntryPoint);
         http.csrf().disable();
-       /* http
-                .authorizeRequests()
-                .antMatchers("/user/login").permitAll()
-                .antMatchers(HttpMethod.GET,"/board/content**").permitAll()
-                .anyRequest().authenticated()
-                .and()
-                .logout();*/
+
+        http.addFilterBefore(authFilter,UsernamePasswordAuthenticationFilter.class);
 
         /*로그인 설정*/
         http.formLogin()
@@ -67,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
                 .maximumSessions(1);
 
         http.authorizeRequests()
-                .antMatchers(HttpMethod.GET,"/board/content").permitAll()
+                .antMatchers(HttpMethod.GET,"/board/content/**").permitAll()
                 .anyRequest().authenticated();
 
 

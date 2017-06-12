@@ -30,6 +30,15 @@ public class UserVO implements UserDetails{
     private boolean isEnabled;
     private Collection<? extends GrantedAuthority> authorities;
 
+    public UserVO() {
+    }
+
+    public UserVO(String username, String password, Collection<? extends GrantedAuthority> authorities) {
+        this.username = username;
+        this.password = password;
+        this.authorities = authorities;
+    }
+
     public int getMemberKey() {
         return memberKey;
     }

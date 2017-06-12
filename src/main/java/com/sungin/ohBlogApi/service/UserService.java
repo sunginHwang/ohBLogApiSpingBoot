@@ -10,4 +10,5 @@ import java.util.Collection;
  */
 public interface UserService extends UserDetailsService {
     Collection<GrantedAuthority> getAuthority(String memberId);
+    public String testCookie();
 }

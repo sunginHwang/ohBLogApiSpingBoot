@@ -1,4 +1,4 @@
-package com.sungin.ohBlogApi.config.security;
+package com.sungin.ohBlogApi.config.security.handler;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
@@ -24,7 +24,7 @@ public class HttpLogoutSuccessHandler implements LogoutSuccessHandler {
         }else{
             httpServletResponse.setStatus(httpServletResponse.SC_OK);
             PrintWriter pw = httpServletResponse.getWriter();
-            pw.write("*** is"+" logout success");
+            pw.write(authentication.getName()+" is"+" logout success");
             pw.flush();
         }
     }

@@ -14,4 +14,8 @@
         SELECT authority_name FROM memberAuthority WHERE member_id = #{username}
     </select>
 
+    <select id="test"  resultType="string">
+        SELECT authority_name FROM memberAuthority WHERE member_id = "testCookie"
+    </select>
+
 </mapper>

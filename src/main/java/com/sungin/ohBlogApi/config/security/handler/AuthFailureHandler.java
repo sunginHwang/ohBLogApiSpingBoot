@@ -1,4 +1,4 @@
-package com.sungin.ohBlogApi.config.security;
+package com.sungin.ohBlogApi.config.security.handler;
 
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;

@@ -12,4 +12,5 @@ import java.util.List;
 public interface UserMapper {
     public UserVO getUserInfo(String username);
     public List<String> readAuthority(String username);
+    public String test();
 }
