@@ -4,7 +4,10 @@ import com.sungin.ohBlogApi.service.BlogBoardService;
 import com.sungin.ohBlogApi.vo.BoardCommentVO;
 import com.sungin.ohBlogApi.vo.BoardContentVO;
 import com.sungin.ohBlogApi.vo.BoardVO;
+import com.sungin.ohBlogApi.exception.exceptions.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.method.P;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +30,11 @@ public class BoardController {
 
         BoardVO boardVO = new BoardVO(categoryKey,limit,"N");
         List<BoardVO> getBoardList = blogBoardService.getBoardList(boardVO);
+
+        if(ObjectUtils.isEmpty(getBoardList)){
+            throw new BoardListNotFoundException("존재하는 게시글이 없습니다.");
+        }
+
         return getBoardList;
     }
 
@@ -38,6 +46,7 @@ public class BoardController {
     @RequestMapping(value = "/content/{boardKey}" , method = RequestMethod.GET)
     public BoardContentVO getBoardContent(@PathVariable int boardKey){
         BoardVO boardContent = blogBoardService.getBoardContent(boardKey);
+
         List<BoardCommentVO> boardCommentVOList = blogBoardService.getBoardCommentList(boardKey);
         BoardContentVO boardContentVO = new BoardContentVO(boardContent,boardCommentVOList);
         return boardContentVO;
