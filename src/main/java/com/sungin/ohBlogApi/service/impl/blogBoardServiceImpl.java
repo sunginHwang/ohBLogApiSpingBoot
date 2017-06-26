@@ -1,5 +1,6 @@
 package com.sungin.ohBlogApi.service.impl;
 
+import com.sungin.ohBlogApi.exception.ExceptionMessage;
 import com.sungin.ohBlogApi.exception.exceptions.*;
 import com.sungin.ohBlogApi.service.BlogBoardService;
 import com.sungin.ohBlogApi.dao.BlogBoardMapper;
@@ -29,7 +30,7 @@ public class BlogBoardServiceImpl implements BlogBoardService {
         List<BoardVO> boardVOList = blogBoardMapper.getBoardList(boardVo);
 
         if(ObjectUtils.isEmpty(boardVOList)){
-            throw new BoardListNotFoundException("해당 게시판 글이 존재하지 않습니다.");
+            throw new BoardListNotFoundException(ExceptionMessage.BOARD_LIST_NOT_EXIST_MESSAGE);
         }
 
         return boardVOList;
@@ -37,7 +38,7 @@ public class BlogBoardServiceImpl implements BlogBoardService {
 
     private void isActivateCategory(int boardCategoryKey){
         if(blogBoardMapper.checkBoardCategory(boardCategoryKey) < 1){
-            throw new BoardCategoryNotExistException("해당 게시판 카테고리가 존재하지 않습니다.");
+            throw new BoardCategoryNotExistException(ExceptionMessage.BOARD_CATEGORY_NOT_EXIST_MESSAGE);
         }
     }
 
@@ -50,7 +51,7 @@ public class BlogBoardServiceImpl implements BlogBoardService {
         BoardVO boardContentInfo = blogBoardMapper.getBoardContent(BoardKey);
 
         if(ObjectUtils.isEmpty(boardContentInfo)){
-            throw new BoardNotFoundException("boardExceptionTest");
+            throw new BoardNotFoundException(ExceptionMessage.BOARD_CONTENT_NOT_EXIST_MESSAGE);
         }
 
         isActivateCategory(boardContentInfo.getCategoryKey());
@@ -64,7 +65,7 @@ public class BlogBoardServiceImpl implements BlogBoardService {
         if(isValidUpdateBoard(boardVO)){
             blogBoardMapper.updateBoardContent(boardVO);
         }else{
-           throw new BoardVaildException("게시판 수정 정보가 정확하지 않습니다.");
+           throw new BoardVaildException(ExceptionMessage.BOARD_UPDATE_VAILD_FAIL_MESSAGE);
         }
 
 
@@ -82,7 +83,7 @@ public class BlogBoardServiceImpl implements BlogBoardService {
         if(boardVO.getMemberKey() >0){
             blogBoardMapper.deleteBoardContent(boardVO.getBoardKey());
         }else{
-            throw new BoardDeleteFailException("삭제 요청 실패");
+            throw new BoardDeleteFailException(ExceptionMessage.BOARD_DELETE_FAIL_MESSAGE);
         }
     }
 
@@ -109,7 +110,7 @@ public class BlogBoardServiceImpl implements BlogBoardService {
         if (isValidUpdateBoardComment(boardCommentVO)) {
             blogBoardMapper.insertBoardComment(boardCommentVO);
         }else{
-            throw new BoardVaildException("게시판 입력 정보가 정확하지 않습니다.");
+            throw new BoardVaildException(ExceptionMessage.BOARD_INSERT_VAILD_FAIL_MESSAGE);
         }
     }
 

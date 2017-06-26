@@ -21,14 +21,14 @@ public class ResponseExceptionAdvice {
     @Autowired
     private MessageSource messageSource;
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(BoardNotFoundException.class)
     @ResponseBody ErrorInfo
     EmptyBoardContent(HttpServletRequest req, BoardNotFoundException ex) {
          return new ErrorInfo(req.getRequestURL().toString(), ex.getMessage());
     }
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(BoardCategoryNotExistException.class)
     @ResponseBody ErrorInfo
     NotExistBoardCategory(HttpServletRequest req, BoardCategoryNotExistException ex) {
@@ -36,7 +36,7 @@ public class ResponseExceptionAdvice {
     }
 
 
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(BoardListNotFoundException.class)
     @ResponseBody ErrorInfo
     EmptyBoardList(HttpServletRequest req, BoardListNotFoundException ex) {
