@@ -5,7 +5,7 @@
 
 
     <select id="checkBoardCategory" resultType="int" parameterType="int">
-        SELECT count(*) as count from OhBoardCategory where del_yn = 'N' and category_key = 1
+        SELECT count(*) as count from OhBoardCategory where del_yn = 'N' and category_key = #{boardCategoryKey}
     </select>
 
     <select id="getBoardList" resultType="com.sungin.ohBlogApi.vo.BoardVO" parameterType="com.sungin.ohBlogApi.vo.BoardVO">

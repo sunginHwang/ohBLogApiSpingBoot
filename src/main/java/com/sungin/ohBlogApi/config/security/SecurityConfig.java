@@ -70,7 +70,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
 
         http.authorizeRequests()
                 .antMatchers(HttpMethod.GET,"/board/content/**").permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().permitAll();
 
 
     }

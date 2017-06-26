@@ -1,11 +1,13 @@
 package com.sungin.ohBlogApi.service.impl;
 
+import com.sungin.ohBlogApi.exception.exceptions.*;
 import com.sungin.ohBlogApi.service.BlogBoardService;
 import com.sungin.ohBlogApi.dao.BlogBoardMapper;
 import com.sungin.ohBlogApi.vo.BoardCommentVO;
 import com.sungin.ohBlogApi.vo.BoardVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -20,22 +22,22 @@ public class BlogBoardServiceImpl implements BlogBoardService {
 
     @Override
     public List<BoardVO> getBoardList(BoardVO boardVo) {
-        int checkCategoryActivate = blogBoardMapper.checkBoardCategory();
 
-        if(isActivateCategory(checkCategoryActivate)){
-            boardVo.setLimit(increaseLimitCount(boardVo.getLimit(),20));
-            return blogBoardMapper.getBoardList(boardVo);
-        }else{
-            return null;
+        isActivateCategory(boardVo.getCategoryKey());
+
+        boardVo.setLimit(increaseLimitCount(boardVo.getLimit(),20));
+        List<BoardVO> boardVOList = blogBoardMapper.getBoardList(boardVo);
+
+        if(ObjectUtils.isEmpty(boardVOList)){
+            throw new BoardListNotFoundException("해당 게시판 글이 존재하지 않습니다.");
         }
+
+        return boardVOList;
     }
 
-    private boolean isActivateCategory(int checkCategoryActivate){
-
-        if(checkCategoryActivate >=1){
-            return true;
-        }else{
-            return false;
+    private void isActivateCategory(int boardCategoryKey){
+        if(blogBoardMapper.checkBoardCategory(boardCategoryKey) < 1){
+            throw new BoardCategoryNotExistException("해당 게시판 카테고리가 존재하지 않습니다.");
         }
     }
 
@@ -46,11 +48,14 @@ public class BlogBoardServiceImpl implements BlogBoardService {
     @Override
     public BoardVO getBoardContent(int BoardKey) {
         BoardVO boardContentInfo = blogBoardMapper.getBoardContent(BoardKey);
-        if(isActivateCategory(boardContentInfo.getCategoryKey())){
-            return boardContentInfo;
-        }else{
-            return null;
+
+        if(ObjectUtils.isEmpty(boardContentInfo)){
+            throw new BoardNotFoundException("boardExceptionTest");
         }
+
+        isActivateCategory(boardContentInfo.getCategoryKey());
+
+        return boardContentInfo;
 
     }
 
@@ -59,7 +64,7 @@ public class BlogBoardServiceImpl implements BlogBoardService {
         if(isValidUpdateBoard(boardVO)){
             blogBoardMapper.updateBoardContent(boardVO);
         }else{
-            System.out.println("로그인 or 양식 잘못 처리");
+           throw new BoardVaildException("게시판 수정 정보가 정확하지 않습니다.");
         }
 
 
@@ -77,7 +82,7 @@ public class BlogBoardServiceImpl implements BlogBoardService {
         if(boardVO.getMemberKey() >0){
             blogBoardMapper.deleteBoardContent(boardVO.getBoardKey());
         }else{
-            System.out.println("안될때의 처리");
+            throw new BoardDeleteFailException("삭제 요청 실패");
         }
     }
 
@@ -104,7 +109,7 @@ public class BlogBoardServiceImpl implements BlogBoardService {
         if (isValidUpdateBoardComment(boardCommentVO)) {
             blogBoardMapper.insertBoardComment(boardCommentVO);
         }else{
-            System.out.println("유효성 처리 못할경우");
+            throw new BoardVaildException("게시판 입력 정보가 정확하지 않습니다.");
         }
     }
 

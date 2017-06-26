@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Repository(value = "blogBoardMapper")
 public interface BlogBoardMapper {
-    public int checkBoardCategory();
+    public int checkBoardCategory(int boardCategoryKey);
     public List<BoardVO> getBoardList(BoardVO boardVO);
     public void updateBoardContent(BoardVO boardVO);
     public void deleteBoardContent(int boardKey);
